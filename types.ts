@@ -16,6 +16,11 @@ export type TransitLandStop = {
   departures?: TransitLandDeparture[];
 };
 
+export type NearMeStop = {
+  stop: TransitLandStop,
+  distAway: number
+}
+
 type TransitLandDeparture = {
   arrival_time: string;
   departure_time: string;
