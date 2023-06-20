@@ -21,7 +21,7 @@ export type NearMeStop = {
   distAway: number
 }
 
-type TransitLandDeparture = {
+export type TransitLandDeparture = {
   arrival_time: string;
   departure_time: string;
   arrival: TransitLandTimeAdjustment;
@@ -30,12 +30,12 @@ type TransitLandDeparture = {
   trip: TransitLandTrip;
 };
 
-type TransitLandTimeAdjustment = {
+export type TransitLandTimeAdjustment = {
   /** Delay in number of seconds from scheduled */
   delay: number;
   /** Estimated time in local time */
-  estimated: string;
-  estimated_utc: string;
+  estimated: string | null;
+  estimated_utc: string | null;
   scheduled: string;
 };
 
@@ -51,4 +51,5 @@ type TransitLandRoute = {
   route_short_name: string;
   route_long_name: string;
   route_color: string;
+  route_text_color: string;
 };
