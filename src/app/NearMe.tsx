@@ -68,10 +68,10 @@ function Stop(props: { stop: NearMeStop }) {
         </Col>
         <Col>
           <Row>
-            {departures ? (
+            {departures ? ( departures.departures?.length ? 
               departures.departures?.map((d, i) => (
                 <Departure data={d} key={i} />
-              ))
+              )) : <p className="text-muted">No departures.</p>
             ) : (
               <Spinner />
             )}
@@ -101,7 +101,7 @@ function Departure(props: { data: TransitLandDeparture }) {
       >
         {props.data.trip.route.route_short_name}
       </Badge>
-      <h5>{minsRemaining}</h5>
+      <h5 className={props.data.departure.estimated_utc ? '' : 'text-muted'}>{minsRemaining}</h5>
       <small>{props.data.trip.trip_headsign}</small>
     </Col>
   );
@@ -112,8 +112,8 @@ function findFrequency(departures: TransitLandDeparture[]) {
   let gap = 0;
   for (let i = 1; i < estimatedDepartures.length; i++) {
     gap +=
-      new Date(estimatedDepartures[i].departure.estimated_utc).getTime() -
-      new Date(estimatedDepartures[i - 1].departure.estimated_utc).getTime();
+      new Date(estimatedDepartures[i].departure.estimated_utc ?? '').getTime() -
+      new Date(estimatedDepartures[i - 1].departure.estimated_utc ?? '').getTime();
   }
   return Math.round(gap / 60000 / (estimatedDepartures.length - 1));
 }
