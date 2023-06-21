@@ -34,7 +34,7 @@ function App() {
       <Helmet>
         <title>Headways</title>
       </Helmet>
-      <Navbar variant="dark" bg="muni">
+      <Navbar variant="dark" bg="muni" className="mb-2">
         <Container>
           <Navbar.Brand href={useHref("/")} onClick={useLinkClickHandler("/")}>
             Headways
