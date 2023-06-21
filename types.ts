@@ -1,9 +1,16 @@
 export type TransitLandStopsResponse = {
   stops: TransitLandStop[];
-  meta?: {
-    after: number;
-    next: string;
-  };
+  meta?: TransitLandMeta;
+};
+
+export type TransitLandRoutesResponse = {
+  routes: TransitLandRoute[];
+  meta?: TransitLandMeta;
+};
+
+type TransitLandMeta = {
+  after: number;
+  next: string;
 };
 
 export type TransitLandStop = {
@@ -17,9 +24,9 @@ export type TransitLandStop = {
 };
 
 export type NearMeStop = {
-  stop: TransitLandStop,
-  distAway: number
-}
+  stop: TransitLandStop;
+  distAway: number;
+};
 
 export type TransitLandDeparture = {
   arrival_time: string;
@@ -52,4 +59,5 @@ type TransitLandRoute = {
   route_long_name: string;
   route_color: string;
   route_text_color: string;
+  route_url: string;
 };
