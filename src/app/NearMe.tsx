@@ -4,7 +4,15 @@ import type {
   NearMeStop,
   TransitLandDeparture,
 } from "../../types";
-import { Badge, Col, Form, ListGroup, Row, Spinner } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Col,
+  Form,
+  ListGroup,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 
 const AGENCIES = {
   SFMTA: "o-9q8y-sfmta",
@@ -16,6 +24,7 @@ export default function NearMe() {
   const [stops, setStops] = useState<NearMeStop[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [agency, setAgency] = useState<string>();
+  const [launched, setLaunched] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((p) => setLocation(p), null, {
@@ -24,14 +33,14 @@ export default function NearMe() {
   }, []);
 
   useEffect(() => {
-    if (location === undefined) return;
+    if (location === undefined || !launched) return;
     fetch(
       `/api/stops?lat=${location.coords.latitude}&lon=${location.coords.longitude}&operators=${agency}`
     )
       .then((r) => r.json())
       .then((d) => setStops(d))
       .then(() => setLoaded(true));
-  }, [location, agency]);
+  }, [location, agency, launched]);
 
   if (!location) return <LocationError />;
 
@@ -39,16 +48,22 @@ export default function NearMe() {
     <>
       <h1>Nearby Stops</h1>
       <AgencySelector setAgency={setAgency} />
-      {loaded ? (
-        <ListGroup>
-          {stops.map((s, i) => (
-            <Stop key={i} stop={s} />
-          ))}
-        </ListGroup>
+      {launched ? (
+        loaded ? (
+          <ListGroup>
+            {stops.map((s, i) => (
+              <Stop key={i} stop={s} />
+            ))}
+          </ListGroup>
+        ) : (
+          <div>
+            <Spinner /> Loading stops near you
+          </div>
+        )
       ) : (
-        <div>
-          <Spinner /> Loading stops near you
-        </div>
+        <Button size="lg" onClick={() => setLaunched(true)}>
+          Find stops near me
+        </Button>
       )}
     </>
   );
@@ -153,7 +168,7 @@ function AgencySelector(props: {
   setAgency: (agency: string | undefined) => void;
 }) {
   return (
-    <Form>
+    <Form className="mb-2">
       <Form.Check
         id="all"
         value="all"
