@@ -3,9 +3,32 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import { Helmet } from "react-helmet";
 import "./App.css";
-import NearMe from "./app/NearMe";
+import {
+  Outlet,
+  useLinkClickHandler,
+  useHref,
+  useLocation,
+} from "react-router-dom";
+import { Nav, NavLink, NavLinkProps } from "react-bootstrap";
+
+const CustomNavLink = (props: NavLinkProps) => (
+  <NavLink
+    {...props}
+    href={useHref(props.href ?? "")}
+    onClick={useLinkClickHandler(props.href ?? "")}
+  />
+);
 
 function App() {
+  const location = useLocation();
+
+  const navbar = [
+    {
+      name: "About",
+      path: "/about",
+    },
+  ];
+
   return (
     <>
       <Helmet>
@@ -13,11 +36,24 @@ function App() {
       </Helmet>
       <Navbar variant="dark" bg="muni">
         <Container>
-          <Navbar.Brand>Headways</Navbar.Brand>
+          <Navbar.Brand href={useHref("/")} onClick={useLinkClickHandler("/")}>
+            Headways
+          </Navbar.Brand>
+          <Nav className="me-auto">
+            {navbar.map((r, i) => (
+              <CustomNavLink
+                key={i}
+                href={r.path}
+                active={location.pathname === r.path}
+              >
+                {r.name}
+              </CustomNavLink>
+            ))}
+          </Nav>
         </Container>
       </Navbar>
       <Container>
-        <NearMe />
+        <Outlet />
       </Container>
     </>
   );
