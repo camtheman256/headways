@@ -4,12 +4,18 @@ import type {
   NearMeStop,
   TransitLandDeparture,
 } from "../../types";
-import { Badge, Col, ListGroup, Row, Spinner } from "react-bootstrap";
+import { Badge, Col, Form, ListGroup, Row, Spinner } from "react-bootstrap";
+
+const AGENCIES = {
+  SFMTA: "o-9q8y-sfmta",
+  BART: "o-9q9-bart",
+};
 
 export default function NearMe() {
   const [location, setLocation] = useState<GeolocationPosition>();
   const [stops, setStops] = useState<NearMeStop[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [agency, setAgency] = useState<string>();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((p) => setLocation(p), null, {
@@ -20,27 +26,30 @@ export default function NearMe() {
   useEffect(() => {
     if (location === undefined) return;
     fetch(
-      `/api/stops?lat=${location.coords.latitude}&lon=${location.coords.longitude}`
+      `/api/stops?lat=${location.coords.latitude}&lon=${location.coords.longitude}&operators=${agency}`
     )
       .then((r) => r.json())
       .then((d) => setStops(d))
       .then(() => setLoaded(true));
-  }, [location]);
+  }, [location, agency]);
 
   if (!location) return <LocationError />;
 
   return (
     <>
       <h1>Nearby Stops</h1>
-      {loaded ? 
-      <ListGroup>
-        {stops.map((s, i) => (
-          <Stop key={i} stop={s} />
-        ))}
-      </ListGroup> : <p>
-        <Spinner /> Loading stops near you
-      </p>
-      }
+      <AgencySelector setAgency={setAgency} />
+      {loaded ? (
+        <ListGroup>
+          {stops.map((s, i) => (
+            <Stop key={i} stop={s} />
+          ))}
+        </ListGroup>
+      ) : (
+        <div>
+          <Spinner /> Loading stops near you
+        </div>
+      )}
     </>
   );
 }
@@ -59,7 +68,7 @@ function Stop(props: { stop: NearMeStop }) {
     fetch(`/api/departures?id=${props.stop.stop.id}`)
       .then((r) => r.json())
       .then((d) => setDepartures(d.stops[0]));
-  }, []);
+  }, [props.stop.stop.id]);
 
   return (
     <ListGroup.Item>
@@ -72,7 +81,9 @@ function Stop(props: { stop: NearMeStop }) {
           <br />
           <small>
             Running every{" "}
-            {departures && <b>{findFrequency(departures.departures ?? [])}</b>}{" "}
+            {departures && (
+              <b>{findFrequency(departures.departures ?? []).toString()}</b>
+            )}{" "}
             mins
           </small>
         </Col>
@@ -136,4 +147,35 @@ function findFrequency(departures: TransitLandDeparture[]) {
       ).getTime();
   }
   return Math.round(gap / 60000 / (estimatedDepartures.length - 1));
+}
+
+function AgencySelector(props: {
+  setAgency: (agency: string | undefined) => void;
+}) {
+  return (
+    <Form>
+      <Form.Check
+        id="all"
+        value="all"
+        label="All"
+        type="radio"
+        name="agency"
+        defaultChecked={true}
+        onChange={() => props.setAgency(undefined)}
+        inline
+      />
+      {Object.entries(AGENCIES).map(([agency, id], i) => (
+        <Form.Check
+          key={i}
+          id={id}
+          value={id}
+          label={agency}
+          name="agency"
+          type="radio"
+          onChange={(e) => props.setAgency(e.target.value)}
+          inline
+        />
+      ))}
+    </Form>
+  );
 }

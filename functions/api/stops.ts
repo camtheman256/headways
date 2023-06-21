@@ -23,7 +23,7 @@ export const onRequestGet: PagesFunction = async (context) => {
     lon,
     radius: "1000",
     limit: "100",
-    served_by_onestop_ids: "o-9q8y-sfmta,o-9q9-bart",
+    served_by_onestop_ids: params.get("operators") || "o-9q8y-sfmta,o-9q9-bart",
     apikey: apiKey,
   });
   const stops = await continuouslyFetchStops(`${STOPS_ROUTE}?${requestParams}`);
