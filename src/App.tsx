@@ -32,7 +32,11 @@ function ThemeToggle() {
       .setAttribute("data-bs-theme", newValue);
   };
 
-  return <Button variant={theme} onClick={handleClick}>{themeIcon[theme]}</Button>;
+  return (
+    <Button variant={theme} onClick={handleClick}>
+      {themeIcon[theme]}
+    </Button>
+  );
 }
 
 function App() {
