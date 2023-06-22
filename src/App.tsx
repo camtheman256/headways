@@ -44,6 +44,10 @@ function App() {
 
   const navbar = [
     {
+      name: "Routes",
+      path: "/routes",
+    },
+    {
       name: "About",
       path: "/about",
     },

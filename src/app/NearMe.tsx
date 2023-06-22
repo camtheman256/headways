@@ -8,16 +8,12 @@ import {
   Badge,
   Button,
   Col,
-  Form,
   ListGroup,
   Row,
   Spinner,
 } from "react-bootstrap";
+import AgencySelector from "../components/AgencySelector";
 
-const AGENCIES = {
-  SFMTA: "o-9q8y-sfmta",
-  BART: "o-9q9-bart",
-};
 
 export default function NearMe() {
   const [location, setLocation] = useState<GeolocationPosition>();
@@ -164,33 +160,3 @@ function findFrequency(departures: TransitLandDeparture[]) {
   return Math.round(gap / 60000 / (estimatedDepartures.length - 1));
 }
 
-function AgencySelector(props: {
-  setAgency: (agency: string | undefined) => void;
-}) {
-  return (
-    <Form className="mb-2">
-      <Form.Check
-        id="all"
-        value="all"
-        label="All"
-        type="radio"
-        name="agency"
-        defaultChecked={true}
-        onChange={() => props.setAgency(undefined)}
-        inline
-      />
-      {Object.entries(AGENCIES).map(([agency, id], i) => (
-        <Form.Check
-          key={i}
-          id={id}
-          value={id}
-          label={agency}
-          name="agency"
-          type="radio"
-          onChange={(e) => props.setAgency(e.target.value)}
-          inline
-        />
-      ))}
-    </Form>
-  );
-}

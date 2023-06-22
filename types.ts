@@ -46,14 +46,14 @@ export type TransitLandTimeAdjustment = {
   scheduled: string;
 };
 
-type TransitLandTrip = {
+export type TransitLandTrip = {
   id: number;
   /** Destination of this trip */
   trip_headsign: string;
   route: TransitLandRoute;
 };
 
-type TransitLandRoute = {
+export type TransitLandRoute = {
   id: number;
   route_short_name: string;
   route_long_name: string;
