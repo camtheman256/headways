@@ -5,15 +5,14 @@ export const onRequestGet: PagesFunction = async (context) => {
     context.request.url.indexOf("?")
   );
   const params = new URLSearchParams(queryString);
-  if (!params.has("operator")) {
-    return new Response("No operator specified!", { status: 400 });
+  if (!params.has("id")) {
+    return new Response("No route id specified!", { status: 400 });
   }
   const apiKey = context.env["API_KEY"];
   const requestParams = new URLSearchParams({
     apikey: apiKey,
-    operator_onestop_id: params.get("operator"),
-    search: params.get("search"),
+    include_geometry: "false",
   });
 
-  return fetch(`${ROUTES_ROUTE}?${requestParams}`);
+  return fetch(`${ROUTES_ROUTE}/${params.get("id")}?${requestParams}`);
 };
