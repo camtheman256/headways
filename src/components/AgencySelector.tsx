@@ -21,7 +21,7 @@ export default function AgencySelector({
           label="All"
           type="radio"
           name="agency"
-          defaultChecked={defaultValue !== undefined}
+          defaultChecked={defaultValue === undefined}
           onChange={() => setAgency(undefined)}
           inline
         />
