@@ -1,9 +1,5 @@
-import type {
-  NearMeStop,
-  TransitLandStop,
-  TransitLandStopsResponse,
-} from "../../types";
-import { calculateDistance } from "../utils";
+import type { TransitLandStop, TransitLandStopsResponse } from "../../types";
+import { sortByClosestStop } from "../utils";
 
 const STOPS_ROUTE = "https://transit.land/api/v2/rest/stops";
 
@@ -29,7 +25,7 @@ export const onRequestGet: PagesFunction = async (context) => {
   const stops = await continuouslyFetchStops(`${STOPS_ROUTE}?${requestParams}`);
 
   return Response.json(
-    findClosestStops(stops, parseFloat(lat), parseFloat(lon))
+    sortByClosestStop(stops, parseFloat(lat), parseFloat(lon))
   );
 };
 
@@ -44,20 +40,3 @@ async function continuouslyFetchStops(
   }
   return stops;
 }
-
-const findClosestStops = (stops: TransitLandStop[], lat: number, lon: number) =>
-  stops
-    .map(
-      (stop): NearMeStop => ({
-        stop,
-        distAway: calculateDistance(
-          lat,
-          lon,
-          stop.geometry.coordinates[1],
-          stop.geometry.coordinates[0]
-        ),
-      })
-    )
-    .sort((a, b) => a.distAway - b.distAway)
-    .slice(0, 10);
-

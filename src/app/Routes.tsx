@@ -1,8 +1,10 @@
 import { FormEvent, useState } from "react";
-import AgencySelector from "../components/AgencySelector";
-import { AGENCIES } from "../data";
-import { Badge, Card, Col, Form, Row } from "react-bootstrap";
+import { Card, Col, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { TransitLandRoute, TransitLandRoutesResponse } from "../../types";
+import AgencySelector from "../components/AgencySelector";
+import { RouteBadge } from "../components/RouteBadge";
+import { AGENCIES } from "../data";
 
 export default function Routes() {
   const defaultAgency = AGENCIES.SFMTA;
@@ -45,22 +47,16 @@ export default function Routes() {
 }
 
 function RouteGrid(props: { routes: TransitLandRoute[] }) {
+  const navigate = useNavigate();
+
   return (
     <Row className="g-4">
       {props.routes.map((r, i) => (
         <Col key={i}>
-          <Card>
+          <Card onClick={() => navigate(`/routes/${r.id}`)}>
             <Card.Body>
               <Card.Title>
-                <Badge
-                  bg="none"
-                  style={{
-                    backgroundColor: `#${r.route_color}`,
-                    color: `#${r.route_text_color}`,
-                  }}
-                >
-                  {r.route_short_name}
-                </Badge>
+                <RouteBadge route={r} />
               </Card.Title>
               <Card.Subtitle>{r.route_long_name}</Card.Subtitle>
             </Card.Body>

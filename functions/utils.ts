@@ -1,3 +1,4 @@
+import { NearMeStop, TransitLandStop } from "../types";
 
 export function calculateDistance(
   lat1: number,
@@ -29,3 +30,29 @@ export function calculateDistance(
 function toRadians(degrees: number): number {
   return (degrees * Math.PI) / 180;
 }
+
+export const measureDistanceToStops = (
+  stops: TransitLandStop[],
+  lat: number,
+  lon: number
+) =>
+  stops.map(
+    (stop): NearMeStop => ({
+      stop,
+      distAway: calculateDistance(
+        lat,
+        lon,
+        stop.geometry.coordinates[1],
+        stop.geometry.coordinates[0]
+      ),
+    })
+  );
+
+export const sortByClosestStop = (
+  stops: TransitLandStop[],
+  lat: number,
+  lon: number
+) =>
+  measureDistanceToStops(stops, lat, lon).sort(
+    (a, b) => a.distAway - b.distAway
+  );

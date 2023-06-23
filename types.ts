@@ -28,6 +28,11 @@ export type NearMeStop = {
   distAway: number;
 };
 
+export type RouteApiResponse = {
+  route: TransitLandRoute;
+  stops: NearMeStop[];
+};
+
 export type TransitLandDeparture = {
   arrival_time: string;
   departure_time: string;
@@ -60,4 +65,7 @@ export type TransitLandRoute = {
   route_color: string;
   route_text_color: string;
   route_url: string;
+  route_stops?: {
+    stop: TransitLandStop;
+  }[];
 };

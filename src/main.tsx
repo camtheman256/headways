@@ -6,6 +6,7 @@ import "./index.css";
 import NearMe from "./app/NearMe.tsx";
 import About from "./app/About.tsx";
 import Routes from "./app/Routes.tsx";
+import Route from "./app/Route.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/routes",
         element: <Routes />,
+      },
+      {
+        path: "/routes/:routeId",
+        element: <Route />,
       },
       {
         path: "/about",
