@@ -39,7 +39,7 @@ export default function NearMe() {
         loaded ? (
           <ListGroup>
             {stops.map((s, i) => (
-              <Stop key={i} stop={s} />
+              <Stop key={i} stop={s} autoLoad={true} />
             ))}
           </ListGroup>
         ) : (

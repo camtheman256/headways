@@ -28,6 +28,10 @@ export default function Route() {
       .then((d) => setRoute(d));
   }, [routeId, location]);
 
+  useEffect(() => {
+    setNearMeStops(findNNearestStops(2, route?.stops ?? []));
+  }, [route]);
+
   if (location === undefined) return <LocationError />;
 
   return (
@@ -64,3 +68,9 @@ export default function Route() {
     </>
   );
 }
+
+const findNNearestStops = (n: number, stops: NearMeStop[]) =>
+  stops
+    .slice()
+    .sort((a, b) => a.distAway - b.distAway)
+    .slice(0, 2);
