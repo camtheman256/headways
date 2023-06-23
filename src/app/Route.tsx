@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ListGroup, Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { NearMeStop, RouteApiResponse, TransitLandStop } from "../../types";
+import { NearMeStop, RouteApiResponse } from "../../types";
+import { LocationError } from "../components/LocationError";
 import { RouteBadge } from "../components/RouteBadge";
 import { Stop } from "../components/Stop";
-import { LocationError } from "../components/LocationError";
 
 export default function Route() {
   const { routeId } = useParams();

@@ -65,7 +65,6 @@ export function Stop({
 }
 
 function Departure(props: { data: TransitLandDeparture }) {
-  const route = props.data.trip.route;
   let minsRemaining = props.data.departure_time;
   if (props.data.departure.estimated_utc !== null) {
     const departure = new Date(props.data.departure.estimated_utc).getTime();
