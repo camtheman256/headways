@@ -73,4 +73,4 @@ const findNNearestStops = (n: number, stops: NearMeStop[]) =>
   stops
     .slice()
     .sort((a, b) => a.distAway - b.distAway)
-    .slice(0, 2);
+    .slice(0, n);
