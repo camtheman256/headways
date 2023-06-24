@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { ListGroup, Spinner } from "react-bootstrap";
+import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
-import { NearMeStop, RouteApiResponse } from "../../types";
+import { NearMeStop, RouteApiResponse, TransitLandRoute } from "../../types";
 import { LocationError } from "../components/LocationError";
 import { RouteBadge } from "../components/RouteBadge";
 import { Stop } from "../components/Stop";
@@ -38,6 +39,13 @@ export default function Route() {
     <>
       {route !== undefined ? (
         <>
+          <Helmet>
+            <title>
+              {route.route.route_short_name} {route.route.route_long_name} -
+              Headways
+            </title>
+            <link rel="apple-touch-icon" href={iconCanvasUrl(route.route)} />
+          </Helmet>
           <h1>
             <RouteBadge route={route.route} /> {route.route.route_long_name}
           </h1>
@@ -74,3 +82,17 @@ const findNNearestStops = (n: number, stops: NearMeStop[]) =>
     .slice()
     .sort((a, b) => a.distAway - b.distAway)
     .slice(0, n);
+
+const iconCanvasUrl = (route: TransitLandRoute) => {
+  const canvas = document.createElement("canvas");
+  canvas.height = 512;
+  canvas.width = 512;
+  const context = canvas.getContext("2d");
+  if (context === null) return;
+  context.fillStyle = `#${route.route_color}`;
+  context.fillRect(0, 0, 512, 512);
+  context.font = "bold 250pt sans-serif";
+  context.fillStyle = `#${route.route_text_color}`;
+  context.fillText(route.route_short_name, 50, 500);
+  return context.canvas.toDataURL("image/png");
+};
