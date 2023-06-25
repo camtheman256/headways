@@ -56,7 +56,7 @@ export default function Route() {
                 key={i}
                 stop={s}
                 filterRoute={route.route.id}
-                autoLoad={true}
+                // autoLoad={true}
               />
             ))}
           </ListGroup>
@@ -89,10 +89,40 @@ const iconCanvasUrl = (route: TransitLandRoute) => {
   canvas.width = 512;
   const context = canvas.getContext("2d");
   if (context === null) return;
+
   context.fillStyle = `#${route.route_color}`;
-  context.fillRect(0, 0, 512, 512);
-  context.font = "bold 250pt sans-serif";
+  context.fillRect(0, 0, canvas.height, canvas.width);
+
   context.fillStyle = `#${route.route_text_color}`;
-  context.fillText(route.route_short_name, 50, 500);
+  for (const fontSize of [250, 168, 72, 48]) {
+    context.font = `bold ${fontSize}pt sans-serif`;
+
+    const fontBox = context.measureText(route.route_short_name);
+    const [fontHeight, fontWidth] = [
+      fontBox.actualBoundingBoxAscent - fontBox.actualBoundingBoxDescent,
+      fontBox.actualBoundingBoxRight - fontBox.actualBoundingBoxLeft,
+    ];
+
+    // Paint font if size looks good
+    if (canvas.height - fontHeight > 50 && canvas.width - fontWidth > 50) {
+      context.fillText(
+        route.route_short_name,
+        (canvas.width - fontWidth) / 2,
+        canvas.height - (canvas.height - fontHeight) / 2
+      );
+      break;
+    }
+  }
+
+  paintHeadwaysBranding(context);
+
   return context.canvas.toDataURL("image/png");
+};
+
+const paintHeadwaysBranding = (context: CanvasRenderingContext2D) => {
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, 230, 50);
+  context.fillStyle = "#000";
+  context.font = "bold 32pt sans-serif";
+  context.fillText("Headways", 5, 40);
 };
