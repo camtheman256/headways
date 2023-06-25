@@ -114,12 +114,13 @@ const iconCanvasUrl = (route: TransitLandRoute) => {
     }
   }
 
-  paintHeadwaysBranding(context);
+  // paintHeadwaysBranding(context);
 
   return context.canvas.toDataURL("image/png");
 };
 
 const paintHeadwaysBranding = (context: CanvasRenderingContext2D) => {
+  // TODO: this needs some work lol, too small
   context.fillStyle = "#fff";
   context.fillRect(0, 0, 230, 50);
   context.fillStyle = "#000";
