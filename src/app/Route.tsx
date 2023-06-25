@@ -90,10 +90,10 @@ const iconCanvasUrl = (route: TransitLandRoute) => {
   const context = canvas.getContext("2d");
   if (context === null) return;
 
-  context.fillStyle = `#${route.route_color}`;
+  context.fillStyle = `#${route.route_color || "333"}`;
   context.fillRect(0, 0, canvas.height, canvas.width);
 
-  context.fillStyle = `#${route.route_text_color}`;
+  context.fillStyle = `#${route.route_text_color || "fff"}`;
   for (const fontSize of [250, 168, 72, 48]) {
     context.font = `bold ${fontSize}pt sans-serif`;
 
