@@ -56,7 +56,7 @@ export default function Route() {
                 key={i}
                 stop={s}
                 filterRoute={route.route.id}
-                // autoLoad={true}
+                autoLoad={true}
               />
             ))}
           </ListGroup>
