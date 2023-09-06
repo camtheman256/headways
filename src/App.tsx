@@ -10,7 +10,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { Button, Nav, NavLink, NavLinkProps } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const CustomNavLink = (props: NavLinkProps) => (
   <NavLink
@@ -21,16 +21,29 @@ const CustomNavLink = (props: NavLinkProps) => (
 );
 
 function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
   const themeIcon = { light: "☀️", dark: "🌙" };
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (event) =>
+      setTheme(event.matches ? "dark" : "light")
+    );
 
   const handleClick = () => {
     const newValue = theme === "light" ? "dark" : "light";
     setTheme(newValue);
-    document
-      .getElementsByTagName("html")[0]
-      .setAttribute("data-bs-theme", newValue);
   };
+
+  useEffect(
+    () =>
+      document
+        .getElementsByTagName("html")[0]
+        .setAttribute("data-bs-theme", theme),
+    [theme]
+  );
 
   return (
     <Button variant={theme} onClick={handleClick}>
