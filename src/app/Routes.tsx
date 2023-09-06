@@ -7,7 +7,7 @@ import { RouteBadge } from "../components/RouteBadge";
 import { AGENCIES } from "../data";
 
 export default function Routes() {
-  const defaultAgency = AGENCIES.SFMTA;
+  const defaultAgency = AGENCIES.MBTA;
   const [agency, setAgency] = useState<string | undefined>(defaultAgency);
   const [routeSearch, setRouteSearch] = useState("");
   const [routeSearchResult, setRouteSearchResult] =

@@ -84,10 +84,10 @@ function Departure(props: { data: TransitLandDeparture }) {
   useEffect(() => {
     if (props.data.departure.estimated_utc !== null) {
       const departure = new Date(props.data.departure.estimated_utc).getTime();
-      const interval = setInterval(
-        () => setMinsRemaining(Math.floor((departure - Date.now()) / 60000)),
-        30000
-      );
+      const calcDeparture = () =>
+        setMinsRemaining(Math.floor((departure - Date.now()) / 60000));
+      calcDeparture();
+      const interval = setInterval(calcDeparture, 30000);
       return () => clearInterval(interval);
     }
   }, [props.data.departure.estimated_utc]);
