@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Col, ListGroup, Row, Spinner } from "react-bootstrap";
+import { useCallback, useEffect, useState } from "react";
+import { Button, Col, ListGroup, Row, Spinner } from "react-bootstrap";
 import { NearMeStop, TransitLandDeparture, TransitLandStop } from "../../types";
 import { RouteBadge } from "./RouteBadge";
 
@@ -16,14 +16,23 @@ export function Stop({
   const [fetchedTime, setFetchedTime] = useState<number>();
   const [minsAgo, setMinsAgo] = useState<number>(0);
 
-  useEffect(() => {
-    if (autoLoad) {
+  const fetchDepartures = useCallback(
+    () =>
       fetch(`/api/departures?id=${stop.stop.id}`)
         .then((r) => r.json())
         .then((d) => setDepartures(d.stops[0]))
-        .then(() => setFetchedTime(Date.now()));
+        .then(() => {
+          setMinsAgo(0);
+          setFetchedTime(Date.now());
+        }),
+    [stop.stop.id]
+  );
+
+  useEffect(() => {
+    if (autoLoad) {
+      fetchDepartures();
     }
-  }, [stop.stop.id, autoLoad]);
+  }, [fetchDepartures, autoLoad]);
 
   useEffect(() => {
     if (fetchedTime !== undefined) {
@@ -43,10 +52,17 @@ export function Stop({
     <ListGroup.Item>
       <Row>
         <Col>
-          <h5>{stop.stop.stop_name}</h5>
-          <small className="text-muted">
-            {Math.round(stop.distAway)}m
-          </small>{" "}
+          <div className="d-flex flex-row align-items-start">
+            <h5 className="me-2">{stop.stop.stop_name}</h5>
+            <Button
+              variant="outline-primary"
+              size="sm"
+              onClick={fetchDepartures}
+            >
+              🔄
+            </Button>
+          </div>
+          <small className="text-muted">{Math.round(stop.distAway)}m</small>{" "}
           <br />
           {departures && (
             <small>
