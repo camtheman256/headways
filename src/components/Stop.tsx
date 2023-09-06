@@ -13,14 +13,27 @@ export function Stop({
   autoLoad?: boolean;
 }) {
   const [departures, setDepartures] = useState<TransitLandStop>();
+  const [fetchedTime, setFetchedTime] = useState<number>();
+  const [minsAgo, setMinsAgo] = useState<number>(0);
 
   useEffect(() => {
     if (autoLoad) {
       fetch(`/api/departures?id=${stop.stop.id}`)
         .then((r) => r.json())
-        .then((d) => setDepartures(d.stops[0]));
+        .then((d) => setDepartures(d.stops[0]))
+        .then(() => setFetchedTime(Date.now()));
     }
   }, [stop.stop.id, autoLoad]);
+
+  useEffect(() => {
+    if (fetchedTime !== undefined) {
+      const timeout = setInterval(
+        () => setMinsAgo(Math.round((Date.now() - fetchedTime) / 60000)),
+        30000
+      );
+      return () => clearInterval(timeout);
+    }
+  }, [fetchedTime]);
 
   const filteredDepartures = departures?.departures?.filter(
     (d) => !filterRoute || d.trip.route.id === filterRoute
@@ -38,7 +51,8 @@ export function Stop({
           {departures && (
             <small>
               Running every{" "}
-              <b>{findFrequency(filteredDepartures ?? []).toString()}</b> mins
+              <b>{findFrequency(filteredDepartures ?? []).toString()}</b> mins,
+              as of {minsAgo} mins ago
             </small>
           )}
         </Col>
@@ -65,17 +79,23 @@ export function Stop({
 }
 
 function Departure(props: { data: TransitLandDeparture }) {
-  let minsRemaining = props.data.departure_time;
-  if (props.data.departure.estimated_utc !== null) {
-    const departure = new Date(props.data.departure.estimated_utc).getTime();
-    const now = Date.now();
-    minsRemaining = Math.floor((departure - now) / 60000).toString();
-  }
+  const [minsRemaining, setMinsRemaining] = useState<number>();
+
+  useEffect(() => {
+    if (props.data.departure.estimated_utc !== null) {
+      const departure = new Date(props.data.departure.estimated_utc).getTime();
+      const interval = setInterval(
+        () => setMinsRemaining(Math.floor((departure - Date.now()) / 60000)),
+        30000
+      );
+      return () => clearInterval(interval);
+    }
+  }, [props.data.departure.estimated_utc]);
   return (
     <Col>
       <RouteBadge route={props.data.trip.route} />
       <h5 className={props.data.departure.estimated_utc ? "" : "text-muted"}>
-        {minsRemaining}
+        {minsRemaining || props.data.departure_time}
       </h5>
       <small>{props.data.trip.trip_headsign}</small>
     </Col>
