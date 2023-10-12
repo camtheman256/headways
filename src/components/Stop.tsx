@@ -105,8 +105,10 @@ function Departure(props: { data: TransitLandDeparture }) {
       calcDeparture();
       const interval = setInterval(calcDeparture, 30000);
       return () => clearInterval(interval);
+    } else {
+      setMinsRemaining(undefined);
     }
-  }, [props.data.departure.estimated_utc]);
+  }, [props.data.departure]);
   return (
     <Col>
       <RouteBadge route={props.data.trip.route} />
