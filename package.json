@@ -21,7 +21,7 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20231002.0",
+    "@cloudflare/workers-types": "^4.20231016.0",
     "@types/react": "^18.2.29",
     "@types/react-dom": "^18.2.13",
     "@types/react-helmet": "^6.1.8",
