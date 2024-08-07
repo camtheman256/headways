@@ -33,6 +33,6 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "typescript": "^5.5.4",
     "vite": "^5.3.5",
-    "wrangler": "^3.68.0"
+    "wrangler": "^3.69.1"
   }
 }
